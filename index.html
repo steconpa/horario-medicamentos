@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de horario para medicamentos</title>
+</head>
+
+<body>
+    <h1>Generador de horario para administración de medicamentos</h1>
+
+    <form>
+        <div class="sleeping schedule" id="sleeping schedule">
+            <h2>Horario para dormir</h2>
+            <p>Establece el horario en el que prefieres dormir:</p>
+        
+            <div class="sleep-time">
+                <label for="start_sleep_time">Empieza:</label>
+                <input type="time" id="start_sleep_time" name="start_sleep_time" required>
+            </div>
+        
+            <div class="sleep-time">
+                <label for="end_sleep_time">Termina:</label>
+                <input type="time" id="end_sleep_time" name="end_sleep_time" required>
+            </div>
+
+            <div>
+                <label for="sleep-preference">En caso de que sea necesario ocupar parte del horario del sueño establecido, ¿qué parte prefiere que ocupemos?</label>
+                <input type="radio" name="sleep-preference" id="before-starting" value="before-starting">
+                <label for="before-starting">Antes de iniciar el horario de sueño</label>
+                <input type="radio" name="sleep-preference" id="before-ending" value="before-ending">
+                <label for="before-ending">Antes de finalizar el horario de sueño</label>
+            </div>
+        </div>
+
+        <div id="medications-container" class="medications-container">
+            <h2>Medicamentos</h2>
+            <div class="drug">
+                <label class="label-medication" for="drug-name-1">Nombre:</label>
+                <input type="text" id="drug-name-1" name="drug-name-1" required>
+                
+                <label class="label-medication" for="drug-dosage-1">Dosis:</label>
+                <input type="text" id="drug-dosage-1" name="drug-dosage-1" required>
+            
+                <label class="label-medication" for="drug-frequency-1">Frecuencia (cada cuántas horas):</label>
+                <input type="number" id="drug-frequency-1" name="drug-frequency-1" required>
+            
+                <label class="label-medication" for="treatment-duration-1">Duración del tratamiento (en días):</label>
+                <input type="number" id="treatment-duration-1" name="treatment-duration-1" required>
+
+                <label class="label-medication" for="date-treatment-begins-1">Fecha de inicio del tratamiento:</label>
+                <input type="date" id="date-treatment-begins-1" name="date-treatment-begins-1" required>
+        
+                <label class="label-medication" for="not-drug-overlapping-1">No solapar con otros medicamentos</label>
+                <input type="checkbox" id="not-drug-overlapping-1" name="not-drug-overlapping-1" value="false">
+            </div>
+        </div>
+        <button type="button" id="add-med-button" name="add-med-button">Agregar otro medicamento</button>
+        <button type="button" id="remove-med-button">Eliminar último medicamento</button>
+        <button type="submit">Generar horario</button>
+    </form>
+
+    <template id="medication-template">
+        <div class="drug">
+          <label class="label-medication" for="drug-name-0">Nombre</label>
+          <input type="text" id="drug-name-0" name="drug-name-0" required>
+          
+          <label class="label-medication" for="drug-dosage-0">Dosis</label>
+          <input type="text" id="drug-dosage-0" name="drug-dosage-0" required>
+          
+          <label class="label-medication" for="drug-frequency-0">Frecuencia (cada cuántas horas):</label>
+          <input type="number" id="drug-frequency-0" name="drug-frequency-0" required>
+            
+          <label class="label-medication" for="treatment-duration-0">Duración del tratamiento (en días):</label>
+          <input type="number" id="treatment-duration-0" name="treatment-duration-0" required>
+
+          <label class="label-medication" for="date-treatment-begins-0">Fecha de inicio del tratamiento:</label>
+          <input type="date" id="date-treatment-begins-0" name="date-treatment-begins-0" required>
+        
+          <label class="label-medication" for="not-drug-overlapping-0">No solapar con otros medicamentos</label>
+          <input type="checkbox" id="not-drug-overlapping-0" name="not-drug-overlapping-0" value="false">
+        </div>
+     </template>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>
