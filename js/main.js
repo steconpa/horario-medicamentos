@@ -36,11 +36,10 @@ addMedButton.addEventListener('click', (event) => {
 });
 
 removeMedButton.addEventListener('click', (event) => {
-    const container = document.querySelector('#medications-container');
-    const medications = container.querySelectorAll('.drug');
+    const medications = medicationContainer.querySelectorAll('.drug');
     
     if (medications.length > 1) {
-      container.removeChild(medications[medications.length - 1]);
+      medicationContainer.removeChild(medications[medications.length - 1]);
       medicationIndex--;
     }
   });
@@ -48,15 +47,47 @@ removeMedButton.addEventListener('click', (event) => {
 form.addEventListener('submit', (event) => {
     event.preventDefault();
     validateSleepingSchedule();
+    validateDatesTreatmentBegins();
 });
 
 function validateSleepingSchedule(){
-    const startTime = new Date(`1970-01-01T${startSleepTime.value}`);
-    const endTime = new Date(`1970-01-01T${endSleepTime.value}`);
-    const timeDiff = Math.abs(endTime - startTime) / 3600000;
+  const startTime = new Date(`2000-01-01T${startSleepTime.value}:00Z`);
+  const endTime = new Date(`2000-01-01T${endSleepTime.value}:00Z`);
+  let timeDifference  = endTime - startTime;
 
-  if (timeDiff < 6 || timeDiff > 10) {
-    alert(timeDiff+"El horario de sueño no es válido. Por favor, verifica los valores ingresados.");
+  if (timeDifference  < 0) {
+    timeDifference  += 24 * 3600000;
+  }
+
+  const hoursDifference = timeDifference /3600000
+
+  if (hoursDifference < 6 || hoursDifference > 10) {
+    const errorMessage = `Ha indicado ${hoursDifference.toFixed(2)} horas para dormir. Se recomienda que sean entre 6 a 10 horas. Por favor, corrija los datos introducidos`;
+
+    endSleepTime.classList.add("invalid-input");
+    endSleepTime.nextElementSibling.innerText = errorMessage;
     return false;
+  } else {
+    endSleepTime.classList.remove("invalid-input");
+    endSleepTime.nextElementSibling.innerText = "";
+    return true;
   }
 }
+
+function validateDatesTreatmentBegins() {
+  const inputsDates = medicationContainer.querySelectorAll("input[type='date']");
+  const actualDate = new Date();
+  const limitDate = new Date(actualDate.getTime() + (3600000 * 24 * 20))
+
+  for (let i = 0; i < inputsDates.length; i++) {
+    var dateBeginsInput = inputsDates[i];
+    var dateInput = new Date(dateBeginsInput.value);
+
+    if (!dateBeginsInput || dateInput < actualDate || dateInput > limitDate ) {
+      alert( dateInput + " fecha invalida.");
+      return false;
+    }
+  }
+  return true;
+}
+
