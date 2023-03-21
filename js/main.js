@@ -48,6 +48,7 @@ form.addEventListener('submit', (event) => {
     event.preventDefault();
     validateSleepingSchedule();
     validateDatesTreatmentBegins();
+    validateDrugNames();
 });
 
 function validateSleepingSchedule(){
@@ -75,19 +76,76 @@ function validateSleepingSchedule(){
 }
 
 function validateDatesTreatmentBegins() {
+  // Obtener todos los inputs de fecha
   const inputsDates = medicationContainer.querySelectorAll("input[type='date']");
+  
+  // Obtener la fecha actual
   const actualDate = new Date();
+  actualDate.setHours(0, 0, 0, 0);
+
+  // Obtener la fecha límite (20 días después de la fecha actual)
   const limitDate = new Date(actualDate.getTime() + (3600000 * 24 * 20))
 
-  for (let i = 0; i < inputsDates.length; i++) {
-    var dateBeginsInput = inputsDates[i];
-    var dateInput = new Date(dateBeginsInput.value);
+  // Establecer el valor de isValid en true
+  let isValid = true;
 
-    if (!dateBeginsInput || dateInput < actualDate || dateInput > limitDate ) {
-      alert( dateInput + " fecha invalida.");
-      return false;
+  // Validar cada input
+  for (let i = 0; i < inputsDates.length; i++) {
+    const dateInput = new Date(`${inputsDates[i].value}T00:00:00.000`);
+
+    if (!inputsDates[i] || dateInput < actualDate || dateInput > limitDate ) {
+      // Si la fecha no es válida, agregar una clase y mostrar un mensaje de error
+      let errorMessage = `La fecha ${dateInput.toLocaleDateString('es-ES', {day: 'numeric', month: 'numeric', year: 'numeric'})} no es valida. `;
+      errorMessage += `Verifique que no sea anterior al ${actualDate.toLocaleDateString('es-ES', {day: 'numeric', month: 'numeric', year: 'numeric'})}, `;
+      errorMessage += `ni mayor al ${limitDate.toLocaleDateString('es-ES', {day: 'numeric', month: 'numeric', year: 'numeric'})}, `;
+      
+      inputsDates[i].classList.add("invalid-input");
+      inputsDates[i].nextElementSibling.innerText = errorMessage;
+      isValid = false;
+    } else{
+      // Si la fecha es válida, eliminar la clase y el mensaje de error
+      inputsDates[i].classList.remove("invalid-input");
+      inputsDates[i].nextElementSibling.innerText = "";
+      isValid = true;
     }
   }
-  return true;
+  // Devolver el valor de isValid
+  return isValid;
+}
+
+function validateDrugNames() {
+  const drugNameInputs = medicationContainer.querySelectorAll("input[type='text'][id*='drug-name']");
+
+  const drugNames = [];
+  
+  // Establecer el valor de isValid en true
+  let isValid = true;
+
+  for (let i = 0; i < drugNameInputs.length; i++) {
+    const drugNameInput = drugNameInputs[i];
+    const drugName = drugNameInput.value.trim();
+    let errorMessage = "";
+    console.log(drugName);
+
+    if (!drugName || drugName.length < 4 || drugName.length > 100) {
+      errorMessage = `El nombre del medicamento puede tener entre 4 y 100 caracteres.`;
+      drugNameInput.classList.add("invalid-input");
+      drugNameInput.nextElementSibling.innerText = errorMessage;
+      isValid = false;
+    }else {
+      if (drugNames.includes(drugName)) {
+      errorMessage = `El valor ${drugName} ya ha sido ingresado en otro campo.`;
+      drugNameInput.classList.add("invalid-input");
+      drugNameInput.nextElementSibling.innerText = errorMessage;
+      isValid = false;
+    }else {
+      drugNameInput.classList.remove("invalid-input");
+      drugNameInput.nextElementSibling.innerText = "";
+      isValid = true;
+    }
+  }
+    drugNames.push(drugName);
+  }
+  return isValid;
 }
 
