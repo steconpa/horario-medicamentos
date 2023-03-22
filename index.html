@@ -35,11 +35,17 @@
             </div>
 
             <div>
-                <label for="sleep-preference">En caso de que sea necesario ocupar parte del horario establecido, ¿qué parte prefiere que ocupemos?</label>
-                <input type="radio" name="sleep-preference" id="before-starting" value="before-starting">
-                <label for="before-starting" checked required>Antes de empezar a dormir</label>
-                <input type="radio" name="sleep-preference" id="before-ending" value="before-ending">
-                <label for="before-ending" required>Antes de terminar de dormir</label>
+                <fieldset>
+                    <legend>En caso de que sea necesario ocupar parte del horario establecido, ¿qué parte prefiere que ocupemos?</legend>
+                    <div class="radio-option">
+                        <input type="radio" id="before-starting" name="sleep-preference" value="before-starting" checked required>
+                        <label for="before-starting">Antes de empezar a dormir</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="before-ending" name="sleep-preference" value="before-ending" required>
+                        <label for="before-ending">Antes de terminar de dormir</label>
+                    </div>
+                </fieldset>
             </div>
         </div>
 
