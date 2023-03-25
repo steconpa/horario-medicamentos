@@ -1,3 +1,27 @@
+class Medication {
+  constructor(name, dosage, frequency, duration, dateBegins, overlapping) {
+    this._name = name;
+    this._dosage = dosage;
+    this._startDate = dateBegins;
+    this._endDate = getDateXDaysFromDate(this._startDate, duration);
+    this._frequency = this.getDatesBetween(this._startDate, this._endDate, frequency);
+    this._overlapping = overlapping;
+  }
+
+  getDatesBetween(startDate, endDate, frequency) {
+    const dates = [];
+    let currentDate = new Date(startDate);
+  
+    while (currentDate <= endDate) {
+      dates.push(new Date(currentDate));
+      currentDate.setHours(currentDate.getHours() + frequency);
+    }
+  
+    return dates;
+  }
+}
+
+
 const form = document.querySelector('form');
 const startSleepTime = document.getElementById('start_sleep_time');
 const endSleepTime = document.getElementById('end_sleep_time');
@@ -6,6 +30,7 @@ const medicationTemplate = document.querySelector('#medication-template');
 const medicationContainer = document.querySelector('#medications-container');
 const addMedButton = document.getElementById('add-med-button');
 let medicationIndex = document.querySelectorAll('.drug').length;
+let treatmentDrugs = [];
 
 const removeMedButton = document.querySelector('#remove-med-button');
 
@@ -46,9 +71,12 @@ removeMedButton.addEventListener('click', (event) => {
 
 form.addEventListener('submit', (event) => {
     event.preventDefault();
-    validateSleepingSchedule();
-    validateDatesTreatmentBegins();
-    validateDrugNameInputs();
+    if(validateSleepingSchedule() &&
+    validateDatesTreatmentBegins() &&
+    validateDrugNameInputs() &&
+    validateDosageInputs()){
+      processMedicationForm();
+    }
 });
 
 function validateSleepingSchedule(){
@@ -73,7 +101,7 @@ function validateDatesTreatmentBegins() {
   // Obtener todos los inputs tipo fecha
   const inputsDates = medicationContainer.querySelectorAll("input[type='date']");
   const actualDate = getTodayAtMidnight();
-  const limitDate = getDateXDaysFromNow(20);
+  const limitDate = getDateXDaysFromDate(actualDate, 20);
 
   // Validar cada input
   for (const input of inputsDates) {
@@ -97,15 +125,16 @@ function getTodayAtMidnight() {
   return today;
 }
 
-function getDateXDaysFromNow( numberDays ) {
-  const date = new Date();
-  date.setDate(date.getDate() + numberDays);
-  date.setHours(0, 0, 0, 0);
-  return date;
+function getDateXDaysFromDate(date, numberDays ) {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + numberDays);
+  newDate.setHours(23, 59, 59, 0);
+  return newDate;
 }
 
 function getDateFromInput(input) {
-  const date = new Date(input.value + "T00:00:00.000");
+  const time = getSleepTime();
+  const date = new Date(input.value + `T${time}`);
   return isNaN(date.getTime()) ? null : date;
 }
 
@@ -167,6 +196,33 @@ function validateDrugName(drugName, existingNames) {
   return null; // no hay errores
 }
 
+function validateDosageInputs() {
+  const drugDosageInputs = medicationContainer.querySelectorAll("input[type='text'][id*='drug-dosage']");
+
+  for (const drugDosageInput of drugDosageInputs) {
+
+    const { value: drugDosage } = drugDosageInput;
+
+    let errorMessage = validateDrugDosage(drugDosage);
+
+    if (errorMessage) {
+      showError(drugDosageInput, errorMessage);
+      return false; // detiene las validaciones con el primer error
+    } else {
+      clearError(drugDosageInput);
+    }
+  }
+  return true;
+}
+
+function validateDrugDosage(drugDosage){
+  if (!drugDosage) {
+    return 'Por favor ingrese la dosis del medicamento.';
+  } else if (drugDosage.length < 4 || drugDosage.length > 100) {
+    return 'La dosis del medicamento debe tener entre 4 y 100 caracteres.';
+  }
+}
+
 function showError(input, message) {
   input.classList.add("invalid-input");
   input.nextElementSibling.innerText = message;
@@ -177,3 +233,41 @@ function clearError(input) {
   input.nextElementSibling.innerText = "";
 }
 
+function processMedicationForm() {
+  
+  const medications = medicationContainer.querySelectorAll('.drug');
+
+  medications.forEach((medication) => {
+    const drugName = medication.querySelector('.drug-name').value;
+    const drugDosage = medication.querySelector('.drug-dosage').value;
+    const drugFrequency = parseInt(medication.querySelector('.drug-frequency').value);
+    const drugDuration = parseInt(medication.querySelector('.treatment-duration').value);
+    const dateBeginsInput = medication.querySelector('.date-treatment-begins');
+    const dateBegins = getDateFromInput(dateBeginsInput);
+    const drugOverlapping = medication.querySelector('.drug-overlapping').checked;
+
+    const medicamento = new Medication (drugName, drugDosage, drugFrequency, drugDuration, 
+      dateBegins, invertCheckboxValue(drugOverlapping) );
+
+    treatmentDrugs.push(medicamento);
+  });
+
+  // Hacer algo con el array de medicamentos, como enviarlo al servidor
+  console.log(treatmentDrugs);
+}
+
+function invertCheckboxValue(booleanValue) {
+  return booleanValue = !booleanValue;
+}
+
+function getSleepTime() {
+  const beforeStarting = form.querySelector('#before-starting');
+  const startSleepTime = form.querySelector('#start_sleep_time');
+  const endSleepTime = form.querySelector('#end_sleep_time');
+  
+  if (beforeStarting.checked) {
+    return endSleepTime.value;
+  } else {
+    return startSleepTime.value;
+  }
+}

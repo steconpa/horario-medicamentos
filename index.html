@@ -53,27 +53,27 @@
             <h2>Medicamentos</h2>
             <div class="drug" id="drug-1">
                 <label class="label-medication" for="drug-name-1">Nombre:</label>
-                <input type="text" id="drug-name-1" name="drug-name-1" required>
+                <input class="drug-name" type="text" id="drug-name-1" name="drug-name-1" required>
                 <span class="error-message" id="drug-name-error-1" aria-live="polite"></span>
                 
                 <label class="label-medication" for="drug-dosage-1">Dosis:</label>
-                <input type="text" id="drug-dosage-1" name="drug-dosage-1" required>
+                <input class="drug-dosage" type="text" id="drug-dosage-1" name="drug-dosage-1" required>
                 <span class="error-message" id="drug-dosage-error-1" aria-live="polite"></span>
             
                 <label class="label-medication" for="drug-frequency-1">Frecuencia (cada cuántas horas):</label>
-                <input type="number" id="drug-frequency-1" name="drug-frequency-1" required>
+                <input class="drug-frequency" type="number" id="drug-frequency-1" name="drug-frequency-1" required>
                 <span class="error-message" id="drug-frequency-error-1" aria-live="polite"></span>
             
                 <label class="label-medication" for="treatment-duration-1">Duración del tratamiento (en días):</label>
-                <input type="number" id="treatment-duration-1" name="treatment-duration-1" required>
+                <input class="treatment-duration" type="number" id="treatment-duration-1" name="treatment-duration-1" required>
                 <span class="error-message" id="treatment-duration-error-1" aria-live="polite"></span>
 
                 <label class="label-medication" for="date-treatment-begins-1">Fecha de inicio del tratamiento:</label>
-                <input type="date" id="date-treatment-begins-1" name="date-treatment-begins-1" required>
+                <input class="date-treatment-begins" type="date" id="date-treatment-begins-1" name="date-treatment-begins-1" required>
                 <span class="error-message" id="date-treatment-begins-error-1" aria-live="polite"></span>
         
-                <label class="label-medication" for="not-drug-overlapping-1">No solapar con otros medicamentos</label>
-                <input type="checkbox" id="not-drug-overlapping-1" name="not-drug-overlapping-1" value="false">
+                <label class="label-medication" for="drug-overlapping-1">No solapar con otros medicamentos</label>
+                <input class="drug-overlapping" type="checkbox" id="drug-overlapping-1" name="drug-overlapping-1" value="true">
             </div>
         </div>
 
@@ -87,27 +87,27 @@
     <template id="medication-template">
         <div class="drug" id="drug-0">
           <label class="label-medication" for="drug-name-0">Nombre</label>
-          <input type="text" id="drug-name-0" name="drug-name-0" required>
+          <input class="drug-name" type="text" id="drug-name-0" name="drug-name-0" required>
           <span class="error-message" id="drug-name-error-0" aria-live="polite"></span>
           
           <label class="label-medication" for="drug-dosage-0">Dosis</label>
-          <input type="text" id="drug-dosage-0" name="drug-dosage-0" required>
+          <input class="drug-dosage" type="text" id="drug-dosage-0" name="drug-dosage-0" required>
           <span class="error-message" id="drug-dosage-error-0" aria-live="polite"></span>
           
           <label class="label-medication" for="drug-frequency-0">Frecuencia (cada cuántas horas):</label>
-          <input type="number" id="drug-frequency-0" name="drug-frequency-0" required>
+          <input class="drug-frequency" type="number" id="drug-frequency-0" name="drug-frequency-0" required>
           <span class="error-message" id="drug-frequency-error-0" aria-live="polite"></span>
             
           <label class="label-medication" for="treatment-duration-0">Duración del tratamiento (en días):</label>
-          <input type="number" id="treatment-duration-0" name="treatment-duration-0" required>
+          <input class="treatment-duration" type="number" id="treatment-duration-0" name="treatment-duration-0" required>
           <span class="error-message" id="treatment-duration-error-0" aria-live="polite"></span>
 
           <label class="label-medication" for="date-treatment-begins-0">Fecha de inicio del tratamiento:</label>
-          <input type="date" id="date-treatment-begins-0" name="date-treatment-begins-0" required>
+          <input class="date-treatment-begins" type="date" id="date-treatment-begins-0" name="date-treatment-begins-0" required>
           <span class="error-message" id="date-treatment-begins-error-0" aria-live="polite"></span>
         
           <label class="label-medication" for="not-drug-overlapping-0">No solapar con otros medicamentos</label>
-          <input type="checkbox" id="not-drug-overlapping-0" name="not-drug-overlapping-0" value="false">
+          <input class="drug-overlapping" type="checkbox" id="drug-overlapping-0" name="drug-overlapping-0" value="true">
         </div>
      </template>
 
