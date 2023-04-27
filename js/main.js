@@ -1,5 +1,5 @@
 class Medication {
-  constructor(name, dosage, frequency, duration, dateBegins, overlapping) {
+  constructor(name, dosage, frequency, duration, dateBegins, overlapping, controlDates) {
     this._name = name;
     this._dosage = dosage;
     this._startDate = dateBegins;
@@ -7,93 +7,115 @@ class Medication {
     // Fecha de finalización del tratamiento (calculada a partir de la duración)
     this._endDate = getDateXDaysFromDate(this._startDate, duration);
     // Array de fechas en las que se debe tomar el medicamento (calculado a partir de la frecuencia)
-    this._frequency = this.getDatesBetween(this._startDate, this._endDate, frequency, this._overlapping);
+    this._frequency = this.getFrequencyArray(frequency, controlDates);
   }
 
   // Función que calcula todas las fechas en las que se debe tomar el medicamento
-  getDatesBetween(startDate, endDate, frequency, overlapping) {
+  getFrequencyArray(frequency, controlDates) {
     // Array para almacenar las fechas
-    const dates = [];
+    const frequencyArr = [];
     // Inicializa fecha actual con la fecha de inicio del tratamiento
-    let currentDate = new Date(startDate);
+    let currentDate = new Date(this._startDate);
   
     // Mientras la fecha actual sea menor o igual a la fecha de finalización del tratamiento
-    while (currentDate <= endDate) {
+    while (currentDate <= this._endDate) {
 
       // Si la fecha no es válida debido a que se solapa con otra fecha de otro medicamento
-      if (!this.isValidDate( currentDate, overlapping )) {
+      if (!this.isValidDate( currentDate, controlDates )) {
 
         // Se aumenta en una hora la fecha actual y se continúa con la siguiente iteración
-        currentDate.setHours(currentDate.getHours() + 1);
+        currentDate.setHours( currentDate.getHours() + 1 );
         continue;
       }
 
       // Si la fecha es válida, se añade al array de fechas del medicamento actual
-      dates.push(new Date(currentDate));
+      frequencyArr.push(new Date(currentDate));
       // Se aumenta la fecha actual en la frecuencia indicada por el usuario
       currentDate.setHours(currentDate.getHours() + frequency);
     }
 
     // Se devuelve el array con todas las fechas
-    return dates;
+    return frequencyArr;
   }
 
-  /* Valida si una fecha es válida para la creación de un nuevo medicamento.
-  La fecha no debe coincidir con las fechas de frecuencia de otros medicamentos, a menos que ambos medicamentos permitan el solapamiento.
-  @param {Date} date - Fecha a validar.
-  @param {boolean} overlapping - Indica si se permite el solapamiento de fechas.
-  @returns {boolean} - Retorna true si la fecha es válida, o false si ya está ocupada por otro medicamento.*/
-  isValidDate(date, overlapping) {
-    const frequencyDates = Object.keys(medicationFrequencies);
-
+  isValidDate(date, controlDates) {
     // Si no hay medicamentos anteriores, la fecha es válida
-    if (frequencyDates.length === 0) {
+    if (!controlDates.length) {
       return true;
     }
   
     // Validar que la fecha no coincida con la frecuencia de otro medicamento
-    for (let frequencyDate of frequencyDates) {
+    for (let treatmentDate of controlDates) {
 
-      const medicationDates = medicationFrequencies[frequencyDate];
-      const fechaFrecuencia = new Date(frequencyDate);
+      const overlappingTreatmentDate = treatmentDate.overlapping;
+      const dateTreatmentDate = treatmentDate.date;
       // Si la fecha coincide con una fecha de un medicamento anterior
-      if (fechaFrecuencia.getTime() === date.getTime()) {
-        
-        for (let medication of medicationDates) {
-          const medicationOverlapping = medication._overlapping;
-  
+      if (dateTreatmentDate.getTime() === date.getTime()) {
+
           // Si el solapamiento no está permitido y la fecha coincide con una fecha ocupada
-          if (medicationOverlapping === false) {
+          if (overlappingTreatmentDate === false) {
             return false;
           }
   
           // Si el solapamiento está permitido pero el nuevo medicamento no lo permite
-          if (medicationOverlapping === true && overlapping === false) {
+          if (overlappingTreatmentDate === true && this._overlapping === false) {
             return false;
           }
         }
-      }
     }
   
     // Si la fecha no coincide con ninguna fecha de otro medicamento o ambos permiten el solapamiento, es válida
     return true;
   }
-
-  getFrequencyDates() {
-  return this._frequency;
-}
   
 }
 
+class TreatmentPlan {
+  constructor(){
+    this._medications = [];
+    this._controlDates = [];
+  }
+  
+  addMedicationToTreatment(medicationObject){
+    this._medications.push(medicationObject);
+  }
+  
+  addDatesToTreatment(medicationObject){
+    const overlappingValue = medicationObject._overlapping;
+    const datesFrecuncy = medicationObject._frequency;
+
+    for(const dateValue of datesFrecuncy) {
+      const dateOverlapping = {
+        date: dateValue,
+        overlapping: overlappingValue
+      };
+
+      if(!this._controlDates.length){
+        this._controlDates.push(dateOverlapping);
+      }
+
+      // Verificar si la fecha ya existe en el array _controlDates
+      const existingDate = this._controlDates.find(controlDate => controlDate.date.getTime() === dateValue.getTime());
+      if (!existingDate) {
+        this._controlDates.push(dateOverlapping)
+      }
+    }
+    console.log(this._controlDates);
+  }
+
+  get getControlDates() {
+    return this._controlDates;
+  }
+}
+
 const form = document.querySelector('form');
-const startSleepTime = document.getElementById('start_sleep_time');
-const endSleepTime = document.getElementById('end_sleep_time');
+const startSleepTime = document.getElementById('start-sleep-time');
+const endSleepTime = document.getElementById('end-sleep-time');
 
 const medicationTemplate = document.querySelector('#medication-template');
 const medicationContainer = document.querySelector('#medications-container');
 const addMedButton = document.getElementById('add-med-button');
 let medicationIndex = document.querySelectorAll('.drug').length;
-const medicationFrequencies = {};
 
 const removeMedButton = document.querySelector('#remove-med-button');
 
@@ -141,7 +163,10 @@ form.addEventListener('submit', (event) => {
 
     if(sleepingScheduleValid && datesBeginsValid
       && drugNameInputsValid && dosageInputsValid ){
-      processMedicationForm();
+      const newTreatmentCreated = processMedicationForm();
+      console.log(newTreatmentCreated);
+      localStorage.setItem('newTreatment', JSON.stringify(newTreatmentCreated));
+      //window.location.href = 'results.html';
     }
 });
 
@@ -201,6 +226,18 @@ function getDateFromInput(input) {
   const time = getSleepTime();
   const date = new Date(input.value + `T${time}`);
   return isNaN(date.getTime()) ? null : date;
+}
+
+function getSleepTime() {
+  const beforeStarting = form.querySelector('#before-starting');
+  const startSleepTime = form.querySelector('#start-sleep-time');
+  const endSleepTime = form.querySelector('#end-sleep-time');
+  
+  if (beforeStarting.checked) {
+    return endSleepTime.value;
+  } else {
+    return startSleepTime.value;
+  }
 }
 
 function validateDateInput(date, minDate, maxDate) {
@@ -300,13 +337,18 @@ function clearError(input) {
 
 function processMedicationForm() {
   const medications = medicationContainer.querySelectorAll('.drug');
+  const newTreatment = new TreatmentPlan();
+  let treatmentControlDates = newTreatment._controlDates;
 
   medications.forEach((medication) => {
     const values = getMedicationValues(medication);
-    const medicationObject = createMedicationObject(values);
-    processFrequencyDates(medicationObject);
+    const medicationObject = createMedicationObject(values, treatmentControlDates);
+    newTreatment.addMedicationToTreatment(medicationObject);
+    newTreatment.addDatesToTreatment(medicationObject);
+    treatmentControlDates = newTreatment.getControlDates;
   });
-  console.log(medicationFrequencies);
+
+  return newTreatment;
 }
 
 function getMedicationValues(medication) {
@@ -328,15 +370,15 @@ function getMedicationValues(medication) {
   };
 }
 
-function createMedicationObject(values) {
-  console.log(values);
+function createMedicationObject(values, controlDates) {
   const medicationObject = new Medication(
     values.drugName,
     values.drugDosage,
     values.drugFrequency,
     values.drugDuration,
     values.dateBegins,
-    invertCheckboxValue(values.drugOverlapping)
+    invertCheckboxValue(values.drugOverlapping),
+    controlDates
   );
   console.log(medicationObject);
   return medicationObject;
@@ -344,27 +386,4 @@ function createMedicationObject(values) {
 
 function invertCheckboxValue(booleanValue) {
   return booleanValue = !booleanValue;
-}
-
-function processFrequencyDates(medication) {
-  const medicationFrequencyDates = medication.getFrequencyDates();
-
-  medicationFrequencyDates.forEach((frequencyDate) => {
-    if (!medicationFrequencies[frequencyDate]) {
-      medicationFrequencies[frequencyDate] = [];
-    }
-    medicationFrequencies[frequencyDate].push(medication);
-  });
-}
-
-function getSleepTime() {
-  const beforeStarting = form.querySelector('#before-starting');
-  const startSleepTime = form.querySelector('#start_sleep_time');
-  const endSleepTime = form.querySelector('#end_sleep_time');
-  
-  if (beforeStarting.checked) {
-    return endSleepTime.value;
-  } else {
-    return startSleepTime.value;
-  }
 }

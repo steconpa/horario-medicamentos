@@ -18,35 +18,33 @@
 <body>
     <h1>Generador de horario para administración de medicamentos</h1>
 
-    <form>
-        <div class="sleeping schedule" id="sleeping schedule">
+    <form name = "" >
+        <div class="sleeping-schedule" id="sleeping-schedule">
             <h2>Horario para dormir</h2>
             <p>Establezca el horario en el que prefiere dormir:</p>
         
             <div class="sleep-time">
-                <label for="start_sleep_time">Empieza:</label>
-                <input type="time" id="start_sleep_time" name="start_sleep_time" required>
+                <label for="start-sleep-time">Empieza:</label>
+                <input type="time" id="start-sleep-time" name="start-sleep-time" required>
             </div>
         
             <div class="sleep-time">
-                <label for="end_sleep_time">Termina:</label>
-                <input type="time" id="end_sleep_time" name="end_sleep_time" required>
-                <span class="error-message" id="end_sleep_time-error" aria-live="polite"></span>
+                <label for="end-sleep-time">Termina:</label>
+                <input type="time" id="end-sleep-time" name="end-sleep-time" required>
+                <span class="error-message" id="end-sleep-time-error" aria-live="polite"></span>
             </div>
 
-            <div>
-                <fieldset>
-                    <legend>En caso de que sea necesario ocupar parte del horario establecido, ¿qué parte prefiere que ocupemos?</legend>
-                    <div class="radio-option">
-                        <input type="radio" id="before-starting" name="sleep-preference" value="before-starting" checked required>
-                        <label for="before-starting">Antes de empezar a dormir</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="before-ending" name="sleep-preference" value="before-ending" required>
-                        <label for="before-ending">Antes de terminar de dormir</label>
-                    </div>
-                </fieldset>
-            </div>
+            <fieldset>
+                <legend>En caso de que sea necesario ocupar parte del horario establecido, ¿qué parte prefiere que ocupemos?</legend>
+                <div class="radio-option">
+                    <input type="radio" id="before-starting" name="sleep-preference" value="before-starting" checked required>
+                    <label for="before-starting">Antes de empezar a dormir</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="before-ending" name="sleep-preference" value="before-ending" required>
+                    <label for="before-ending">Antes de terminar de dormir</label>
+                </div>
+            </fieldset>
         </div>
 
         <div id="medications-container" class="medications-container">
