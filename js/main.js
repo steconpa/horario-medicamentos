@@ -114,9 +114,9 @@ const endSleepTime = document.getElementById('end-sleep-time');
 
 const medicationTemplate = document.querySelector('#medication-template');
 const medicationContainer = document.querySelector('#medications-container');
+
 const addMedButton = document.getElementById('add-med-button');
 let medicationIndex = document.querySelectorAll('.drug').length;
-
 const removeMedButton = document.querySelector('#remove-med-button');
 
 addMedButton.addEventListener('click', (event) => {
@@ -157,16 +157,14 @@ removeMedButton.addEventListener('click', (event) => {
 form.addEventListener('submit', (event) => {
     event.preventDefault();
     const sleepingScheduleValid = validateSleepingSchedule();
-    const datesBeginsValid = validateDatesTreatmentBegins();
     const drugNameInputsValid = validateDrugNameInputs();
     const dosageInputsValid = validateDosageInputs();
+    const datesBeginsValid = validateDatesTreatmentBegins();
 
     if(sleepingScheduleValid && datesBeginsValid
       && drugNameInputsValid && dosageInputsValid ){
       const newTreatmentCreated = processMedicationForm();
       console.log(newTreatmentCreated);
-      localStorage.setItem('newTreatment', JSON.stringify(newTreatmentCreated));
-      //window.location.href = 'results.html';
     }
 });
 
@@ -241,6 +239,7 @@ function getSleepTime() {
 }
 
 function validateDateInput(date, minDate, maxDate) {
+  console.log(date, minDate, maxDate);
   if (!date) {
     return 'Por favor ingrese la fecha en la que inicia el tratamiento.';
   } else if (date < minDate || date > maxDate) {
@@ -300,12 +299,12 @@ function validateDrugName(drugName, existingNames) {
 
 function validateDosageInputs() {
   const drugDosageInputs = medicationContainer.querySelectorAll("input[type='text'][id*='drug-dosage']");
-
+  
   for (const drugDosageInput of drugDosageInputs) {
 
     const { value: drugDosage } = drugDosageInput;
 
-    let errorMessage = validateDrugDosage(drugDosage);
+    let errorMessage =  validateDrugDosage(drugDosage);
 
     if (errorMessage) {
       showError(drugDosageInput, errorMessage);
@@ -326,12 +325,12 @@ function validateDrugDosage(drugDosage){
 }
 
 function showError(input, message) {
-  input.classList.add("invalid-input");
+  input.nextElementSibling.classList.add("error-message");
   input.nextElementSibling.innerText = message;
 }
 
 function clearError(input) {
-  input.classList.remove("invalid-input");
+  input.nextElementSibling.classList.remove("error-message");
   input.nextElementSibling.innerText = "";
 }
 
@@ -370,6 +369,10 @@ function getMedicationValues(medication) {
   };
 }
 
+function invertCheckboxValue(booleanValue) {
+  return booleanValue = !booleanValue;
+}
+
 function createMedicationObject(values, controlDates) {
   const medicationObject = new Medication(
     values.drugName,
@@ -382,8 +385,4 @@ function createMedicationObject(values, controlDates) {
   );
   console.log(medicationObject);
   return medicationObject;
-}
-
-function invertCheckboxValue(booleanValue) {
-  return booleanValue = !booleanValue;
 }
