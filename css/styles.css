@@ -1,14 +1,73 @@
 body {
-    font-family: 'Noto Sans Display', sans-serif;
-  }
-
-form{
-  width: fit-content;
-  max-width: 90%;
-  margin: auto, 0;
+  font-family: 'Noto Sans Display', sans-serif;
+  background-image: -webkit-gradient(linear, left top, right top, from(#ffecd2), to(#fcb69f));
+  background-image: -o-linear-gradient(left, #ffecd2 0%, #fcb69f 100%);
+  background-image: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
+  background-attachment: fixed;
 }
-.medications-container{
-  display: inline;
+
+.medications-enter {
+  display: flex; 
+  flex-direction: column; 
+  align-items: left;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  max-width: 75%;
+  background-color: #fcb69f70 ;
+  border-radius: 20px;
+  padding: 1em;
+  -webkit-box-shadow: -3px -1px 18px 0px #ffecd2;
+          box-shadow: -3px -1px 18px 0px #ffecd2;
+}
+
+.medications-enter p{
+  margin-top: 0;
+}
+
+.sleeping-schedule, .medications-container {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: none;
+}
+
+legend {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-decoration: overline;
+}
+
+.sleeping-schedule input[type="time"] {
+  margin-bottom: 10px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 1em;
+}
+
+.sleeping-schedule label {
+  display: inline-flex;
+  width: 8em;
+}
+
+.sleeping-schedule input[type="radio"] {
+  display: none;
+}
+
+.sleeping-schedule input[type="radio"] + label {
+  display: inline-block;
+  padding: 5px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+  cursor: pointer;
+  text-align: center;
+  font-size: small ;
+}
+
+.sleeping-schedule input[type="radio"]:checked + label {
+  background-color: #ccc;
 }
 
 .add-remove-buttons{
@@ -23,6 +82,8 @@ form{
 }
 .error-message {
   display: block;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
   width: fit-content;
   padding: 5px 10px;
   border: 1px solid #ff0000;
@@ -31,23 +92,6 @@ form{
   font-weight: bold;
   font-size: small;
   margin-bottom: 5px;
-}
-
-input[type="radio"] {
-  display: none;
-}
-
-input[type="radio"] + label {
-  display: inline-block;
-  padding: 5px;
-  border: 2px solid #ccc;
-  border-radius: 5px;
-  margin-right: 10px;
-  cursor: pointer;
-}
-
-input[type="radio"]:checked + label {
-  background-color: #ccc;
 }
 
 .drug-overlapping {

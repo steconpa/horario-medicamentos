@@ -28,22 +28,22 @@
         <section id="medications-form" title="Formulario para registrar los medicamentos del tratamiento">
             <h2>Registre los medicamentos del tratamiento médico</h2>
             <p>Complete el siguiente formulario</p>
-            <form name = "medications-enter" >
+            <form class="medications-enter" name = "medications-enter" >
                 <fieldset class="sleeping-schedule" id="sleeping-schedule" title="Establecer el horario de sueño">
                     <legend>Horario para dormir</legend>
-                        <p>Establezca el horario en el que prefiere dormir:</p>
-                        <label for="start-sleep-time">Empieza:</label>
+                        <p>Establezca su horario de sueño:</p>
+                        <label for="start-sleep-time">Me acuesto a las:</label>
                         <input type="time" id="start-sleep-time" name="start-sleep-time" required><br>
                         
-                        <label for="end-sleep-time">Termina:</label>
+                        <label for="end-sleep-time">Me levanto a las:</label>
                         <input type="time" id="end-sleep-time" name="end-sleep-time" required>
                         <span id="end-sleep-time-error" aria-live="polite"></span>
                         
-                        <p>En caso de que sea necesario ocupar parte del horario establecido, ¿qué parte prefiere que ocupemos?</p>
+                        <p>Si es necesario ocupar parte del horario establecido, ¿qué prefiere?</p>
                         <input type="radio" id="before-starting" name="sleep-preference" value="before-starting" checked required>
-                        <label for="before-starting">Antes de empezar a dormir</label>
+                        <label for="before-starting">Acostarme más tarde</label>
                         <input type="radio" id="before-ending" name="sleep-preference" value="before-ending" required>
-                        <label for="before-ending">Antes de terminar de dormir</label>
+                        <label for="before-ending">Levantarme más temprano</label>
                 </fieldset>
 
                 <fieldset id="medications-container" class="medications-container" title="Ingresar los medicamentos">
